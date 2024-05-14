@@ -1,0 +1,48 @@
+name: Dependency Update
+
+on: [push]
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly-2024-02-07
+          override: true
+
+      - name: Install cargo-outdated
+        run: cargo install cargo-outdated
+
+      - name: Check for outdated dependencies
+        id: outdated
+        run: cargo outdated || echo "Dependencies are up to date."
+
+      - name: Update dependencies
+        if: ${{ steps.outdated.outcome == 'success' }}
+        run: cargo update
+
+      - name: Commit and push changes
+        if: ${{ steps.outdated.outcome == 'success' }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b update-dependencies
+          git add Cargo.lock
+          git commit -m "chore(deps): update dependencies"
+          git push origin update-dependencies
+
+      - name: Create Pull Request
+        if: ${{ steps.outdated.outcome == 'success' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update dependencies"
+          branch: update-dependencies
+          title: "chore(deps): update dependencies"
+          body: "Automated dependency update by the [dependency-update.yml](./.github/workflows/depenency-update.yml) workflow."
