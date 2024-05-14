@@ -20,19 +20,10 @@ jobs:
           toolchain: nightly-2024-02-07
           override: true
 
-      - name: Install cargo-outdated
-        run: cargo install cargo-outdated
-
-      - name: Check for outdated dependencies
-        id: outdated
-        run: cargo outdated || echo "Dependencies are up to date."
-
       - name: Update dependencies
-        if: ${{ steps.outdated.outcome == 'success' }}
         run: cargo update
 
       - name: Commit and push changes
-        if: ${{ steps.outdated.outcome == 'success' }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -42,7 +33,6 @@ jobs:
           git push origin update-dependencies
 
       - name: Create Pull Request
-        if: ${{ steps.outdated.outcome == 'success' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
