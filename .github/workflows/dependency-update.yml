@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup | Toolchain
         uses: actions-rs/toolchain@v1
@@ -21,9 +23,6 @@ jobs:
           profile: minimal
           toolchain: nightly-2024-02-07
           override: true
-
-      - name: Checkout main branch
-        run: git checkout main
 
       - name: Update dependencies
         run: cargo update
