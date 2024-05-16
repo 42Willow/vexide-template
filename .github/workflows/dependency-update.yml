@@ -34,6 +34,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git push origin --delete update-dependencies || true
+          git checkout main
+          git pull origin main
           git checkout -b update-dependencies
           git add Cargo.lock
           git commit -m "chore(deps): update dependencies"
