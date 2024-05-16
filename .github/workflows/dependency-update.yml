@@ -42,5 +42,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(deps): update dependencies"
           branch: update-dependencies
+          base: main
           title: "chore(deps): update dependencies"
           body: "Automated dependency update by the [dependency-update.yml](./.github/workflows/depenency-update.yml) workflow."
