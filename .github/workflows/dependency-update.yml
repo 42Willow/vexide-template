@@ -34,19 +34,17 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git push origin --delete update-dependencies || true
-          git checkout main
-          git pull origin main
           git checkout -b update-dependencies
           git add Cargo.lock
           git commit -m "chore(deps): update dependencies"
           git push origin update-dependencies
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(deps): update dependencies"
-          branch: update-dependencies
-          base: main
-          title: "chore(deps): update dependencies"
-          body: "Automated dependency update by the [dependency-update.yml](./.github/workflows/depenency-update.yml) workflow."
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit-message: "chore(deps): update dependencies"
+      #     branch: update-dependencies
+      #     base: main
+      #     title: "chore(deps): update dependencies"
+      #     body: "Automated dependency update by the [dependency-update.yml](./.github/workflows/depenency-update.yml) workflow."
