@@ -25,7 +25,9 @@ jobs:
           override: true
 
       - name: Update dependencies
-        run: cargo update
+        run: |
+          cargo update
+          git diff Cargo.lock
 
       - name: Commit and push changes
         run: |
