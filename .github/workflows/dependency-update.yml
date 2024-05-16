@@ -22,6 +22,9 @@ jobs:
           toolchain: nightly-2024-02-07
           override: true
 
+      - name: Checkout main branch
+        run: git checkout main
+
       - name: Update dependencies
         run: cargo update
 
