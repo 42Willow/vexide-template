@@ -1,0 +1,48 @@
+name: Dependency Update
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup | Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly-2024-02-07
+          override: true
+
+      - name: Update dependencies
+        run: cargo update
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git push origin --delete update-dependencies || true
+          git checkout -b update-dependencies
+          git add Cargo.lock
+          git commit -m "chore(deps): update dependencies"
+          git push origin update-dependencies
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update dependencies"
+          branch: update-dependencies
+          base: main
+          title: "chore(deps): update dependencies"
+          body: "Automated dependency update by the [dependency-update.yml](./.github/workflows/depenency-update.yml) workflow."
